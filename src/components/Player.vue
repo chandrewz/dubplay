@@ -54,7 +54,7 @@
 
 <script>
 import QueryService from '../services/QueryService.js'
-import WebRTCService from '../services/WebRTCService.js'
+import ScaleDroneService from '../services/ScaleDroneService.js'
 
 export default {
   name: 'Player',
@@ -76,14 +76,17 @@ export default {
       this.videoId = this.queue[0].id;
       this.player.playVideo()
     },
-    queueVideo(video) {
-      let item = {
+    queueVideo(video, isYoutube = true) {
+      let item = isYoutube ? {
         id: video.id.videoId,
         title: video.snippet.title,
         thumbnail: video.snippet.thumbnails.default.url
-      };
+      } : video;
       this.queue.push(item);
-      WebRTCService.sendSignalingMessage(JSON.stringify(item));
+      if (isYoutube) {
+        // queued from app, so publish; don't queue when broadcast is received
+        ScaleDroneService.publish(item);
+      }
       if (this.queue.length == 1) {
         this.playVideo();
       }
@@ -111,8 +114,15 @@ export default {
     }
   },
   mounted() {
-    let hash = Math.floor(Math.random() * 0xFFFFFF).toString(16);
-    WebRTCService.connect(hash);
+    let hash = 'abc123';
+    ScaleDroneService.connect(hash);
+    ScaleDroneService.room.on('message', message => {
+      console.log(message);
+      if (ScaleDroneService.getClientId() !== message.clientId) {
+        // make sure message was not sent by us
+        this.queueVideo(message.data, false);
+      }
+    });
   }
 }
 </script>
