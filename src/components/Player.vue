@@ -74,16 +74,22 @@ export default {
   methods: {
     playVideo() {
       this.videoId = this.queue[0].id;
-      this.player.playVideo()
+      // added delay becase playing right after fails
+      setTimeout(() => {
+        this.player.playVideo();
+        if (this.queue[0].timestamp) {
+          this.player.seekTo(this.queue[0].timestamp);
+        }
+      }, 2000);
     },
-    queueVideo(video, isYoutube = true) {
-      let item = isYoutube ? {
+    queueVideo(video, isLocal = true) {
+      let item = isLocal ? {
         id: video.id.videoId,
         title: video.snippet.title,
         thumbnail: video.snippet.thumbnails.default.url
       } : video;
       this.queue.push(item);
-      if (isYoutube) {
+      if (isLocal) {
         // queued from app, so publish; don't queue when broadcast is received
         ScaleDroneService.publish(item);
       }
@@ -94,11 +100,7 @@ export default {
     ended() {
       this.queue.shift();
       if (this.queue.length > 0) {
-        // added delay becase playing right after fails
-        let component = this;
-        setTimeout(function() {
-          component.playVideo();
-        }, 2000);
+        this.playVideo();
       }
     },
     query() {
@@ -106,6 +108,15 @@ export default {
       QueryService.get(this.searchText).then(response => {
         component.results = response.data;
       });
+    },
+    broadcastPlaylist() {
+      if (this.queue.length > 0) {
+        this.player.getCurrentTime().then(result => {
+          let copy = [...this.queue];
+          copy[0].timestamp = result;
+          ScaleDroneService.publish(copy);
+        });
+      }
     }
   },
   computed: {
@@ -120,8 +131,19 @@ export default {
       console.log(message);
       if (ScaleDroneService.getClientId() !== message.clientId) {
         // make sure message was not sent by us
-        this.queueVideo(message.data, false);
+        if (Array.isArray(message.data)) {
+          // sync playlists
+          if (this.queue.length === 0 && this.queue.length !== message.data.length) {
+            this.queue = message.data;
+            this.playVideo();
+          }
+        } else {
+          this.queueVideo(message.data, false);
+        }
       }
+    });
+    ScaleDroneService.room.on('member_join', () => {
+      this.broadcastPlaylist();
     });
   }
 }
