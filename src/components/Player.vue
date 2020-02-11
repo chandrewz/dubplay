@@ -4,11 +4,11 @@
     <!-- header -->
     <div class="player-header flex-row flex-center">
       <h2 class="flex-one">
-        <i class="fa fa-headphones"></i> <span>DubPlayer</span>
+        <i class="fa fa-headphones" title="A player inspired by Dubtrack.fm"></i> <span>DubPlayer</span>
       </h2>
-      <div class="user-count"><i class="fa fa-user"></i> {{ users }}</div>
+      <div class="user-count"><i class="fa fa-user" title="Users online"></i> {{ users }}</div>
       <button class="btn-common" @click="isSearchOpen = !isSearchOpen">
-        <i class="fa fa-bars"></i>
+        <i class="fa fa-bars" title="Search menu"></i>
       </button>
     </div>
 
@@ -179,11 +179,17 @@ export default {
 }
 
 .search {
+  background-color: $monokai-dark;
+  margin-top: 3em;
   position: absolute;
   right: -420px;
   top: 0;
-  background-color: $monokai-dark;
+  transition: border-color .4s cubic-bezier(.215,.61,.355,1),background-color .4s cubic-bezier(.215,.61,.355,1),opacity .4s cubic-bezier(.215,.61,.355,1),transform .4s cubic-bezier(.215,.61,.355,1);
   width: 420px;
+}
+
+.search.visible {
+  transform: translateX(-420px);
 }
 
 .search .search-bar {
@@ -206,10 +212,6 @@ export default {
 
 .search .results .video .thumbnail {
   cursor: pointer;
-}
-
-.search.visible {
-  transform: translateX(-420px);
 }
 
 .user-count {

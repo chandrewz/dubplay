@@ -24,7 +24,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: $monokai-white;
-  margin-top: 60px;
+  margin: 3em;
 }
 
 body {
