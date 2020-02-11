@@ -3,7 +3,9 @@ import Vue from 'vue'
 export default {
 
   get(query) {
-    var url = 'https://www.googleapis.com/youtube/v3/search?type=video&part=snippet&order=viewCount&maxResults=3&key=AIzaSyBQGdt4DU0NcwoBJvB5N6plDAXw85t2QfM';
+    const maxResults = 10;
+    const key = 'AIzaSyBQGdt4DU0NcwoBJvB5N6plDAXw85t2QfM';
+    const url = `https://www.googleapis.com/youtube/v3/search?type=video&part=snippet&order=viewCount&maxResults=${maxResults}&key=${key}`;
     return Vue.http.get(`${url}&q=${query}`);
   }
 }

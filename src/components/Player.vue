@@ -18,12 +18,12 @@
       </div>
       <div class="playlist flex-one">
         <table>
-          <tr v-for="(video, index) in queue" v-bind:key="index">
+          <tr v-for="(video, index) in queue" v-bind:key="index" class="flex-center">
             <td class="number" v-bind:class="{ playing : index == 0 }">
               {{ index == 0 ? 'Playing' : index }}
             </td>
             <td><img v-bind:src="video.thumbnail"></td>
-            <td>{{ video.title }}</td>
+            <td v-html="video.title">{{ video.title }}</td>
           </tr>
         </table>
       </div>
@@ -31,7 +31,7 @@
 
     <!-- search & queue -->
     <div class="search" v-bind:class="{ visible : isSearchOpen }">
-      <div class="search-bar flex-row">
+      <div class="search-bar flex-row flex-center">
         <i class="fa fa-search"></i>
         <input class="search-input flex-one" type="text" placeholder="Search video..." v-model="searchText" v-on:keyup.enter="query">
         <button class="btn-common" @click="isSearchOpen = false">
@@ -39,11 +39,11 @@
         </button>
       </div>
       <ul class="results">
-        <li class="video flex-row" v-for="(video, index) in results.items" :key="index">
+        <li class="video flex-row flex-center" v-for="(video, index) in results.items" :key="index">
           <div class="thumbnail">
             <img v-bind:src="video.snippet.thumbnails.default.url" @click="queueVideo(video)">
           </div>
-          <div class="title">{{ video.snippet.title }}</div>
+          <div class="title" v-html="video.snippet.title">{{ video.snippet.title }}</div>
           <div class="duration"></div>
         </li>
       </ul>
@@ -182,7 +182,6 @@ export default {
 }
 
 .search .search-bar {
-  align-items: center;
   margin: 0 1em 0 1em;
 }
 

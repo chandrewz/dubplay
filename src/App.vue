@@ -45,6 +45,10 @@ body {
   flex: 1;
 }
 
+.flex-center {
+  align-items: center;
+}
+
 .btn-common {
   color: $monokai-white;
   background-color: transparent;
