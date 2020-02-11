@@ -2,10 +2,11 @@
   <div class="player-wrapper flex-column">
     
     <!-- header -->
-    <div class="player-header flex-row flex-middle flex-stretch">
+    <div class="player-header flex-row flex-center">
       <h2 class="flex-one">
         <i class="fa fa-headphones"></i> <span>DubPlayer</span>
       </h2>
+      <div class="user-count"><i class="fa fa-user"></i> {{ users }}</div>
       <button class="btn-common" @click="isSearchOpen = !isSearchOpen">
         <i class="fa fa-bars"></i>
       </button>
@@ -68,7 +69,8 @@ export default {
       },
       isSearchOpen: false,
       searchText: '',
-      results: {}
+      results: {},
+      users: 0
     }
   },
   methods: {
@@ -144,7 +146,10 @@ export default {
     });
     ScaleDroneService.room.on('member_join', () => {
       this.broadcastPlaylist();
+      this.users++;
     });
+    ScaleDroneService.room.on('member_leave', () => this.users--);
+    ScaleDroneService.room.on('members', members => this.users = members.length);
   }
 }
 </script>
@@ -207,4 +212,9 @@ export default {
   transform: translateX(-420px);
 }
 
+.user-count {
+  font-family: monospace;
+  color: $monokai-green;
+  margin-right: 1em;
+}
 </style>
