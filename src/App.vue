@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <Player />
+    <div class="player-wrap">
+      <Player />
+    </div>
   </div>
 </template>
 
@@ -24,7 +26,20 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: $monokai-white;
-  margin: 3em;
+  // margin: 3em;
+  display: -ms-flexbox;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.player-wrap {
+  width: 1080px;
+  height: calc(100vh - 4em);
 }
 
 body {
