@@ -25,7 +25,7 @@
             </td>
             <td @click="skip(index)">
               <img v-bind:src="video.thumbnail" class="thumbnail">
-              <i class="fa fa-window-close-o skip" title="Skip"></i>
+              <i class="fa fa-window-close-o skip"></i>
             </td>
             <td v-html="video.title">{{ video.title }}</td>
           </tr>
@@ -44,11 +44,11 @@
       </div>
       <ul class="results">
         <li class="video flex-row flex-center" v-for="(video, index) in results.items" :key="index">
-          <div class="thumbnail">
-            <img v-bind:src="video.snippet.thumbnails.default.url" @click="queueVideo(video)">
+          <div>
+            <img v-bind:src="video.snippet.thumbnails.default.url" @click="queueVideo(video)" class="thumbnail">
+            <i class="fa fa-play-circle-o play"></i>
           </div>
           <div class="title" v-html="video.snippet.title">{{ video.snippet.title }}</div>
-          <div class="duration"></div>
         </li>
       </ul>
     </div>
@@ -216,6 +216,19 @@ export default {
   }
 }
 
+.results {
+  .play {
+    color: $monokai-green;
+    display: none;
+    position: absolute;
+    transform: translate(-120%, 20%);
+  }
+
+  .thumbnail:hover + .play {
+    display: inline;
+  }
+}
+
 .search {
   background-color: $monokai-dark;
   margin-top: 3em;
@@ -254,7 +267,7 @@ export default {
 
 .user-count {
   font-family: monospace;
-  color: $monokai-green;
+  color: $monokai-orange;
   margin-right: 1em;
 }
 </style>
