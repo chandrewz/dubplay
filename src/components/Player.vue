@@ -14,8 +14,8 @@
 
     <!-- player -->
     <div class="player flex-row">
-      <div class="video flex-one">
-        <youtube v-bind:video-id="videoId" v-bind:player-vars="playerVars" ref="youtube" @ended="ended"></youtube>
+      <div class="flex-one">
+        <youtube :video-id="videoId" :player-vars="playerVars" ref="youtube" @ended="ended" :width="500" :height="250"></youtube>
       </div>
       <div class="playlist flex-one">
         <table>
@@ -23,7 +23,10 @@
             <td class="number" v-bind:class="{ playing : index == 0 }">
               {{ index == 0 ? 'Playing' : index }}
             </td>
-            <td><img v-bind:src="video.thumbnail"></td>
+            <td @click="skip(index)">
+              <img v-bind:src="video.thumbnail" class="thumbnail">
+              <i class="fa fa-window-close-o skip" title="Skip"></i>
+            </td>
             <td v-html="video.title">{{ video.title }}</td>
           </tr>
         </table>
@@ -62,7 +65,7 @@ export default {
   data() {
     return {
       queue: [],
-      videoUrl: "",
+      videoUrl: '',
       videoId: '',
       playerVars: {
         autoplay: 1
@@ -95,7 +98,7 @@ export default {
         // queued from app, so publish; don't queue when broadcast is received
         ScaleDroneService.publish(item);
       }
-      if (this.queue.length == 1) {
+      if (this.queue.length === 1) {
         this.playVideo();
       }
     },
@@ -116,8 +119,20 @@ export default {
         this.player.getCurrentTime().then(result => {
           let copy = [...this.queue];
           copy[0].timestamp = result;
-          ScaleDroneService.publish(copy);
+          ScaleDroneService.publish({ action: 'sync', queue: copy });
         });
+      }
+    },
+    skip(index) {
+      this.queue.splice(index, 1);
+      if (this.queue.length === 0) {
+        this.player.stopVideo();
+      }
+      if (index === 0 && this.queue.length > 0) {
+        this.playVideo();
+        ScaleDroneService.publish({ action: 'sync', queue: this.queue, play: true });
+      } else {
+        ScaleDroneService.publish({ action: 'sync', queue: this.queue});
       }
     }
   },
@@ -127,17 +142,27 @@ export default {
     }
   },
   mounted() {
-    let hash = 'abc123';
+    let hash = 'abc123'; // use for rooms later
     ScaleDroneService.connect(hash);
     ScaleDroneService.room.on('message', message => {
       console.log(message);
+
+      // make sure message was not sent by us
       if (ScaleDroneService.getClientId() !== message.clientId) {
-        // make sure message was not sent by us
-        if (Array.isArray(message.data)) {
-          // sync playlists
-          if (this.queue.length === 0 && this.queue.length !== message.data.length) {
-            this.queue = message.data;
-            this.playVideo();
+
+        if (message.data.action === 'sync') {
+
+          const isNew = this.queue.length === 0 && this.queue.length !== message.data.length;
+
+          // check if data received is different
+          if (this.queue.length !== message.data.length) {
+            this.queue = message.data.queue;
+
+            if (message.data.queue.length === 0) {
+              this.player.stopVideo();
+            } else if (message.data.play || isNew) {
+              this.playVideo();
+            }
           }
         } else {
           this.queueVideo(message.data, false);
@@ -166,16 +191,29 @@ export default {
   flex-wrap: no-wrap;
 }
 
-.playlist .number {
-  color: $monokai-grey;
-  font-family: monospace;
-  font-size: 15px;
-  font-weight: bold;
-}
+.playlist {
+  .number {
+    color: $monokai-grey;
+    font-family: monospace;
+    font-size: 15px;
+    font-weight: bold;
+  }
 
-.playlist .playing {
-  color: $monokai-blue;
-  font-weight: normal;
+  .playing {
+    color: $monokai-blue;
+    font-weight: normal;
+  }
+
+  .skip {
+    color: $monokai-red;
+    display: none;
+    position: absolute;
+    transform: translate(-120%, 20%);
+  }
+
+  .thumbnail:hover + .skip {
+    display: inline;
+  }
 }
 
 .search {
@@ -210,7 +248,7 @@ export default {
   color: $monokai-grey;
 }
 
-.search .results .video .thumbnail {
+.thumbnail {
   cursor: pointer;
 }
 
