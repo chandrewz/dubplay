@@ -1,6 +1,6 @@
 <template>
   <!-- search & queue -->
-  <div class="search" v-bind:class="{ visible : isSearchOpen }">
+  <div class="search" :class="{ visible : isSearchOpen }">
     <div class="search-bar flex-row flex-center">
       <i class="fa fa-search"></i>
       <input class="search-input flex-one" type="text" placeholder="Search video..." v-model="searchText" v-on:keyup.enter="query">
@@ -11,7 +11,7 @@
     <ul class="results">
       <li class="video flex-row flex-center" v-for="(video, index) in results.items" :key="index">
         <div>
-          <img v-bind:src="video.snippet.thumbnails.default.url" @click="queue(video)" class="thumbnail">
+          <img :src="video.snippet.thumbnails.default.url" @click="queue(video)" class="thumbnail">
           <i class="fa fa-play-circle-o play"></i>
         </div>
         <div class="title" v-html="video.snippet.title">{{ video.snippet.title }}</div>
@@ -54,12 +54,11 @@ export default {
 .search {
 
   background-color: $monokai-dark;
-  margin-top: 3em;
   position: absolute;
-  right: -420px;
-  top: 0;
   transition: border-color .4s cubic-bezier(.215,.61,.355,1),background-color .4s cubic-bezier(.215,.61,.355,1),opacity .4s cubic-bezier(.215,.61,.355,1),transform .4s cubic-bezier(.215,.61,.355,1);
   width: 420px;
+  display: none;
+  right: 0;
 
   .search-bar {
     margin: 0 1em 0 1em;
@@ -78,6 +77,21 @@ export default {
       color: $monokai-grey;
     }
   }
+}
+
+.search.visible {
+  display: block;
+  -webkit-animation: slide-down .3s ease-out;
+  -moz-animation: slide-down .3s ease-out;
+}
+
+@-webkit-keyframes slide-down {
+      0% { opacity: 0; -webkit-transform: translateY(-100%); }   
+    100% { opacity: 1; -webkit-transform: translateY(0); }
+}
+@-moz-keyframes slide-down {
+      0% { opacity: 0; -moz-transform: translateY(-100%); }   
+    100% { opacity: 1; -moz-transform: translateY(0); }
 }
 
 .results {

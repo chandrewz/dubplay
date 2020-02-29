@@ -1,8 +1,6 @@
 <template>
   <div id="app">
-    <div class="player-wrap">
-      <Player />
-    </div>
+    <Player />
   </div>
 </template>
 
@@ -35,11 +33,6 @@ export default {
   flex-wrap: nowrap;
   min-height: 100vh;
   width: 100%;
-}
-
-.player-wrap {
-  width: 1080px;
-  height: calc(100vh - 4em);
 }
 
 body {

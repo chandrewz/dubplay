@@ -7,7 +7,7 @@
         <i class="fa fa-headphones" title="A player inspired by Dubtrack.fm"></i> <span>DubPlayer</span>
       </h2>
       <div class="user-count"><i class="fa fa-user" title="Users online"></i> {{ users }}</div>
-      <button class="btn-common" @click="isSearchOpen = true">
+      <button class="btn-common" @click="isSearchOpen = !isSearchOpen">
         <i class="fa fa-bars" title="Search menu"></i>
       </button>
     </div>
@@ -19,12 +19,12 @@
       </div>
       <div class="playlist flex-one">
         <table>
-          <tr v-for="(video, index) in queue" v-bind:key="index" class="flex-center">
-            <td class="number" v-bind:class="{ playing : index == 0 }">
+          <tr v-for="(video, index) in queue" :key="index" class="flex-center">
+            <td class="number" :class="{ playing : index == 0 }">
               {{ index == 0 ? 'Playing' : index }}
             </td>
             <td @click="skip(index)">
-              <img v-bind:src="video.thumbnail" class="thumbnail">
+              <img :src="video.thumbnail" class="thumbnail">
               <i class="fa fa-window-close-o skip"></i>
             </td>
             <td v-html="video.title">{{ video.title }}</td>
@@ -162,6 +162,11 @@ export default {
 
 .player-wrapper {
   background: $monokai-darker;
+  width: 1080px;
+  height: calc(100vh - 4em);
+  max-height: 600px;
+  overflow-y: auto;
+  position: relative;
 }
 
 .player-header {
@@ -191,10 +196,6 @@ export default {
   .thumbnail:hover + .skip {
     display: inline;
   }
-}
-
-.search.visible {
-  transform: translateX(-420px);
 }
 
 .thumbnail {
