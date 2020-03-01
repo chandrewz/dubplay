@@ -20,5 +20,6 @@ npm run build
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Screenshot preview
+
+See [Progress](https://github.com/chandrewz/dubplay/tree/master/progress).
