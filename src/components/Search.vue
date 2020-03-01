@@ -24,7 +24,7 @@
 import QueryService from '../services/QueryService.js'
 
 export default {
-  name: 'Player',
+  name: 'Search',
   data() {
     return {
       searchText: '',

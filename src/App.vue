@@ -64,4 +64,11 @@ body {
   font-size: 180%;
   outline: none;
 }
+
+.monospace {
+  color: $monokai-grey;
+  font-family: monospace;
+  font-size: 15px;
+  font-weight: bold;
+  }
 </style>

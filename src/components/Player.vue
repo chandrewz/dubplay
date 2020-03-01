@@ -16,18 +16,19 @@
     <div class="player flex-row">
       <div class="flex-one">
         <youtube :video-id="videoId" :player-vars="playerVars" ref="youtube" @ended="ended" :width="500" :height="250"></youtube>
+        <History :history="history" />
       </div>
       <div class="playlist flex-one">
         <table>
           <tr v-for="(video, index) in queue" :key="index" class="flex-center">
-            <td class="number" :class="{ playing : index == 0 }">
+            <td class="monospace" :class="{ playing : index == 0 }">
               {{ index == 0 ? 'Playing' : index }}
             </td>
             <td @click="skip(index)">
               <img :src="video.thumbnail" class="thumbnail">
               <i class="fa fa-window-close-o skip"></i>
             </td>
-            <td v-html="video.title">{{ video.title }}</td>
+            <td v-html="video.title"></td>
           </tr>
         </table>
       </div>
@@ -39,12 +40,14 @@
 </template>
 
 <script>
-import ScaleDroneService from '../services/ScaleDroneService.js'
-import Search from './Search.vue'
+import ScaleDroneService from '../services/ScaleDroneService.js';
+import History from './History.vue';
+import Search from './Search.vue';
 
 export default {
   name: 'Player',
   components: {
+    History,
     Search
   },
   data() {
@@ -56,7 +59,8 @@ export default {
         autoplay: 1
       },
       isSearchOpen: false,
-      users: 0
+      users: 0,
+      history: []
     }
   },
   methods: {
@@ -86,7 +90,7 @@ export default {
       }
     },
     ended() {
-      this.queue.shift();
+      this.history.push(this.queue.shift());
       if (this.queue.length > 0) {
         this.playVideo();
       }
@@ -165,7 +169,7 @@ export default {
   width: 1080px;
   height: calc(100vh - 4em);
   max-height: 600px;
-  overflow-y: auto;
+  overflow-y: scroll;
   position: relative;
 }
 
@@ -174,12 +178,6 @@ export default {
 }
 
 .playlist {
-  .number {
-    color: $monokai-grey;
-    font-family: monospace;
-    font-size: 15px;
-    font-weight: bold;
-  }
 
   .playing {
     color: $monokai-blue;
@@ -204,7 +202,7 @@ export default {
 
 .user-count {
   font-family: monospace;
-  color: $monokai-orange;
+  color: $monokai-purple;
   margin-right: 1em;
 }
 </style>
