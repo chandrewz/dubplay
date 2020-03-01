@@ -19,7 +19,3 @@ npm run build
 ```
 npm run lint
 ```
-
-### Screenshot preview
-
-See [Progress](https://github.com/chandrewz/dubplay/tree/master/progress).
