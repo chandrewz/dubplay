@@ -63,6 +63,7 @@ export default {
       history: []
     }
   },
+  props: ['room'],
   methods: {
     playVideo() {
       this.videoId = this.queue[0].id;
@@ -123,7 +124,7 @@ export default {
     }
   },
   mounted() {
-    let hash = 'abc123'; // use for rooms later
+    let hash = this.room;
     ScaleDroneService.connect(hash);
     ScaleDroneService.room.on('message', message => {
       console.log(message);

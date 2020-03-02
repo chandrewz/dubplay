@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Player />
+    <Player :room="$route.path" />
   </div>
 </template>
 
@@ -11,6 +11,11 @@ export default {
   name: 'app',
   components: {
     Player
+  },
+  watch: {
+    $route() {
+      location.reload();
+    }
   }
 }
 </script>
