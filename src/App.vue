@@ -29,7 +29,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: $monokai-white;
-  // margin: 3em;
   display: -ms-flexbox;
   display: flex;
   flex-direction: row;

@@ -4,7 +4,7 @@
     <!-- header -->
     <div class="player-header flex-row flex-center">
       <h2 class="flex-one">
-        <i class="fa fa-headphones" title="A player inspired by Dubtrack.fm"></i> <span>DubPlayer</span>
+        <i class="fa fa-headphones" title="A player inspired by Dubtrack.fm"></i> <span>DubPlay</span>
       </h2>
       <div class="user-count"><i class="fa fa-user" title="Users online"></i> {{ users }}</div>
       <button class="btn-common" @click="isSearchOpen = !isSearchOpen">
